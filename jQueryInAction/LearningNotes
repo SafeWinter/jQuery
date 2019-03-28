@@ -1,0 +1,39 @@
+//2019-03-29
+1. create a custom jQuery filter
+demo1: 
+$.expr[':'].requiredLevel = $.expr.createPseudo( function( filterParam ) {
+	return function (element, context, isXml) {
+		return element.getAttribute('data-level') > 2 && element.getAttribute() > 100;
+	};
+});
+var $requiredLevels = $('.levels li:requiredLevel');
+
+demo2:
+$.expr[':'].pointsHigherThan = $.expr.createPseudo ( function ( filterParam ) {
+	var points = parseInt(filterParam, 10);
+	return function ( element, context, isXml ) {
+		return element.getAttribute('data-points') > points;
+	};
+});
+var $higherPointsLevels = $('.levels li:pointsHigherThan(50)');
+
+demo3:
+$.expr[':'].onlyText = $.expr.createPseudo(function(param){
+	return function(element, context, isXml){
+		return element.innerHTML.match(/^\w+$/);
+	};
+});
+var $myResult = $(':onlyText');
+
+Note:
+1) function createPseudo() is a jQuery utility, belonging to the underlying Sizzle selectors engine
+
+2) 最内层的匿名函数的返回结果是一个 boolean 值，表征 element 是否被保留：
+function(element, context, isXml){
+	return element.innerHTML.match(/^\w+$/);
+};
+
+3) 引用了 jQuery 对象的标识符，最好加前缀【$】，以避免重复套用 $ ();
+
+4) both will bo - li:nth-child(3n-2)  ===  li:nth-child(3n+1);
+
