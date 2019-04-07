@@ -22,6 +22,10 @@
          alert(obj1.identifyMe(value));
          alert(whoAmI.call(obj2, value));
          alert(whoAmI.apply(obj3, [value]));
+
+         //the result should be:
+         //obj1.identifyMe.call( obj3 ): obj3 undefined
+         console.log( 'obj1.identifyMe.call( obj3 ):', obj1.identifyMe.call( obj3 ) );
       </script>
    </body>
 </html>
