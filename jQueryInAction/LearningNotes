@@ -1,14 +1,17 @@
 //2019-03-29
 1. create a custom jQuery filter
 demo1: 
+```js
 $.expr[':'].requiredLevel = $.expr.createPseudo( function( filterParam ) {
 	return function (element, context, isXml) {
 		return element.getAttribute('data-level') > 2 && element.getAttribute() > 100;
 	};
 });
 var $requiredLevels = $('.levels li:requiredLevel');
+```
 
 demo2:
+```js
 $.expr[':'].pointsHigherThan = $.expr.createPseudo ( function ( filterParam ) {
 	var points = parseInt(filterParam, 10);
 	return function ( element, context, isXml ) {
@@ -16,30 +19,36 @@ $.expr[':'].pointsHigherThan = $.expr.createPseudo ( function ( filterParam ) {
 	};
 });
 var $higherPointsLevels = $('.levels li:pointsHigherThan(50)');
+```
 
 demo3:
+```js
 $.expr[':'].onlyText = $.expr.createPseudo(function(param){
 	return function(element, context, isXml){
 		return element.innerHTML.match(/^\w+$/);
 	};
 });
 var $myResult = $(':onlyText');
+```
 
 Note:
 1) function createPseudo() is a jQuery utility, belonging to the underlying Sizzle selectors engine
 
 2) 最内层的匿名函数的返回结果是一个 boolean 值，表征 element 是否被保留：
+```js
 function(element, context, isXml){
 	return element.innerHTML.match(/^\w+$/);
 };
+```
 
-3) 引用了 jQuery 对象的标识符，最好加前缀【$】，以避免重复套用 $ ();
+3) 引用了 jQuery 对象的标识符，最好加前缀【$】，以避免重复套用 $();
 
 4) both will bo - li:nth-child(3n-2)  ===  li:nth-child(3n+1);
 
 //2019-03-30
 第三章勘误：
 英文版第54页：
+```js
 $('<img>',
   {
     src: 'images/little.bear.png',
@@ -50,7 +59,9 @@ $('<img>',
     }
   })
   .appendTo('body');
+```
 实测时 src 的路径有误，应改为'../images/...':
+```js
 $('<img>',
   {
     src: '../images/little.bear.png',
@@ -61,44 +72,49 @@ $('<img>',
     }
   })
   .appendTo('body');
+```
 
-
-关于运行第三章的示例代码：
+### 关于运行第三章的示例代码：
 由于使用了 iframe 标签，直接用浏览器打开本地 html 文件将报错：
+```js
 lab.operations.html:185 Uncaught DOMException: Blocked a frame with origin "null" from accessing a cross-origin frame.
     at HTMLFormElement.<anonymous> (file:///D:/apache-tomcat-8.0.36/webapps/jqia3/chapter-3/lab.operations.html:185:29)
     at HTMLFormElement.dispatch (file:///D:/apache-tomcat-8.0.36/webapps/jqia3/js/jquery-1.11.3.min.js:4:8549)
     at HTMLFormElement.r.handle (file:///D:/apache-tomcat-8.0.36/webapps/jqia3/js/jquery-1.11.3.min.js:4:5252)
-错误语句位于 chapter-3/dom.sample.page.html L185：
+```
+错误语句位于 `chapter-3/dom.sample.page.html L185`：
+```js
 var $set = frame.perform(operation);
+```
 来自 dom.sample.page.html L121:
+```js
          function perform(operation) {
             $('*').removeClass('found-element');
             eval('var $set=' + operation + ';');
             $set.addClass('found-element');
             return $set;
          }
-解决办法：
-1、运行tomcat服务器（实测 tomcat V8.0.36）；
-2、将随书源代码文件夹重命名为 jqia3 后放入 webapps 文件夹；
-3、从 bin 文件夹启动服务器，输入如下 url 即可: 
+```
+### 解决办法：
+1. 运行tomcat服务器（实测 tomcat V8.0.36）；
+2. 将随书源代码文件夹重命名为 jqia3 后放入 webapps 文件夹；
+3. 从 bin 文件夹启动服务器，输入如下 url 即可: 
 http://localhost:8080/jqia3/chapter-3/lab.operations.html
 
 
-关于 alert($('img').length) 无效的问题：
+### 关于 alert($('img').length) 无效的问题：
+```js
 Ignored call to 'alert()'. The document is sandboxed, and the 'allow-modals' keyword is not set.
 Uncaught TypeError: Cannot read property 'addClass' of undefined
     at perform (dom.sample.page.html:124)
     at HTMLFormElement.<anonymous> (lab.operations.html:185)
     at HTMLFormElement.dispatch (jquery-1.11.3.min.js:4)
     at HTMLFormElement.r.handle (jquery-1.11.3.min.js:4)
+```
 原因：
 由于使用了 iframe 的 sandbox 属性，默认禁用了 alert 警告框，需添加 allow-modals 显式声明：（lab.operations.html L69-70）
+```xml
 <iframe id="frame" name="frame" src="dom.sample.page.html" seamless="seamless"
         sandbox="allow-same-origin allow-scripts allow-modals"></iframe>
+```
 添加关键词 allow-modals 后正常。
-
-
-1、解决示例代码的运行问题
-2、更正新增图片元素 img 的 src 路径问题
-3、解决 iframe 中的沙箱无法显示 alert 对话框问题
