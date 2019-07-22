@@ -454,4 +454,11 @@ jQuery 事件模型
   $('.elements').on('click.myApp.myName', myFunction);
   $('.elements').trigger('click.myapp');
 
+  同时触发同一命名空间下的多个事件：
+  $('.elements').on('click.myApp.myName', myFunction);
+  $('.other-elements').on('click.myApp', myOtherFunction);
+
+  调用含 myApp 的命名空间的事件函数：
+  $('.elements, .other-elements').trigger('click.myApp');
+
   
